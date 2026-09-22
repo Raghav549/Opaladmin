@@ -1,4 +1,6 @@
 import React,{useMemo,useState}from'react';
+const HERO_IMAGE='https://res.cloudinary.com/wholetv/image/upload/v1790069674/wvvcl7fyntc9uewwoe3z.webp';
+const HERO_VIDEO='https://res.cloudinary.com/wholetv/video/upload/v1784040316/zdgx29xmmjf7q9dmrcpu.mp4';
 import{createRoot}from'react-dom/client';
 import{BarChart3,Box,Layers3,Image as ImageIcon,Users,ShoppingBag,TicketPercent,Palette,Settings,Plus,Search,Trash2,Edit3,Eye,Video,ChevronDown,Menu,LayoutDashboard,PackageCheck,Clock3,IndianRupee,MoreHorizontal}from'lucide-react';
 import{Bar,BarChart,CartesianGrid,Line,LineChart,ResponsiveContainer,Tooltip,XAxis,YAxis,PieChart,Pie,Cell}from'recharts';
@@ -39,13 +41,14 @@ const tone=['#171716','#786451','#9c9285'];
 
 function App(){
  const[section,setSection]=useState('Dashboard');
- const[products,setProducts]=useState(productSeed);
+ const[products,setProducts]=useState(()=>{try{return JSON.parse(localStorage.getItem('opal-products')||'null')||productSeed}catch{return productSeed}});
  const[search,setSearch]=useState('');
  const[openEditor,setOpenEditor]=useState<number|null>(null);
  const[selectedTab,setSelectedTab]=useState<'Products'|'Categories'>('Products');
  const[menu,setMenu]=useState(false);
  const filtered=useMemo(()=>products.filter(p=>(p.name+' '+p.category+' '+p.variant).toLowerCase().includes(search.toLowerCase())),[products,search]);
  const deleteProduct=(id:number)=>setProducts(ps=>ps.filter(p=>p.id!==id));
+ useEffect(()=>localStorage.setItem('opal-products',JSON.stringify(products)),[products]);
  return <div className="adminShell">
   <aside className={'sidebar '+(menu?'open':'')}>
    <div className="adminLogo">Opal<span> Admin</span></div>
@@ -71,7 +74,10 @@ function App(){
 
    {section==='Categories'&&<section className="panel"><div className="panelHead"><div><span className="eyebrow">STRUCTURE</span><h2>Categories</h2></div><button className="primary3d"><Plus size={15}/> Add category</button></div><div className="categoryGrid">{categories.map(c=><div className="categoryCard" key={c.id}><div className="categoryTop"><span className="categoryNumber">{String(c.id).padStart(2,'0')}</span><div className="rowActions"><button><Edit3 size={14}/></button><button><Trash2 size={14}/></button></div></div><h3>{c.name}</h3><p>{c.accent}</p><strong>{c.count} variants</strong></div>)}</div></section>}
 
-   {(section==='Banners'||section==='Coupons'||section==='Theme'||section==='Settings')&&<section className="panel"><div className="panelHead"><div><span className="eyebrow">CONTROL</span><h2>{section}</h2></div><button className="primary3d"><Plus size={15}/> Add</button></div><div className="placeholderPanel"><div className="bigGlyph">{section==='Banners'?<ImageIcon/>:section==='Coupons'?<TicketPercent/>:section==='Theme'?<Palette/>:<Settings/>}</div><h3>{section} workspace</h3><p>Management surface prepared for real records, uploads and configuration.</p></div></section>}
+   {section==='Banners'&&<section className="panel"><div className="panelHead"><div><span className="eyebrow">VISUALS</span><h2>Banners</h2></div><button className="primary3d"><Plus size={15}/> Add banner</button></div><div className="bannerManager"><div className="bannerPreview"><img src={HERO_IMAGE}/><div><strong>OPAL HERO</strong><small>Cloudinary hero reference · textless</small></div></div><div className="mediaSource"><label>Hero image URL<input defaultValue={HERO_IMAGE}/></label><label>Hero video URL<input defaultValue={HERO_VIDEO}/></label><button className="primary3d" onClick={()=>alert('Media URLs are ready to connect to your production content store.')}>Save media settings</button></div></div></section>}
+{section==='Coupons'&&<section className="panel"><div className="panelHead"><div><span className="eyebrow">PROMOTIONS</span><h2>Coupons</h2></div><button className="primary3d"><Plus size={15}/> Add coupon</button></div><div className="couponGrid"><div className="couponCard"><strong>Coupon manager</strong><p>Create, edit, disable and delete discount codes from this control surface.</p><div><span>CODE</span><b>—</b></div><div><span>STATUS</span><b>Not connected</b></div></div><div className="couponCard"><strong>Rules</strong><p>Percentage/fixed discount, minimum order, validity, usage limits and product/category scope.</p></div></div></section>}
+{section==='Theme'&&<section className="panel"><div className="panelHead"><div><span className="eyebrow">DESIGN SYSTEM</span><h2>Theme</h2></div><button className="primary3d" onClick={()=>alert('Theme configuration saved locally.')}>Save theme</button></div><div className="themeControls"><label>Canvas<input type="color" defaultValue="#ffffff"/></label><label>Ink<input type="color" defaultValue="#171716"/></label><label>Deep gray<input type="color" defaultValue="#777773"/></label><label>Accent brown<input type="color" defaultValue="#786451"/></label></div></section>}
+{section==='Settings'&&<section className="panel"><div className="panelHead"><div><span className="eyebrow">SYSTEM</span><h2>Settings</h2></div></div><div className="placeholderPanel"><div className="bigGlyph"><Settings/></div><h3>Platform settings</h3><p>Production authentication, storage, payments, email and database credentials belong in server-side environment variables.</p></div></section>}
 
    {(section==='Users'||section==='Orders')&&<section className="panel"><div className="panelHead"><div><span className="eyebrow">OPERATIONS</span><h2>{section}</h2></div></div><div className="metricGrid"><Metric icon={<Users/>} label="Total" value="—" note="Connect data source"/><Metric icon={<ShoppingBag/>} label="Active" value="—" note="Awaiting live data"/><Metric icon={<Clock3/>} label="Pending" value="—" note="Awaiting live data"/><Metric icon={<PackageCheck/>} label="Delivered" value="—" note="Awaiting live data"/></div><div className="placeholderPanel small"><p>Live {section.toLowerCase()} records will appear here when the backend data source is connected. No fabricated counts are shown.</p></div></section>}
 
