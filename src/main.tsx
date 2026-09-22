@@ -1,4 +1,4 @@
-import React,{useMemo,useState}from'react';
+import React,{useEffect,useMemo,useState}from'react';
 const HERO_IMAGE='https://res.cloudinary.com/wholetv/image/upload/v1790069674/wvvcl7fyntc9uewwoe3z.webp';
 const HERO_VIDEO='https://res.cloudinary.com/wholetv/video/upload/v1784040316/zdgx29xmmjf7q9dmrcpu.mp4';
 import{createRoot}from'react-dom/client';
