@@ -8,6 +8,7 @@ import'./styles.css';
 
 type Product={id:number;name:string;category:string;variant:string;status:'Active'|'Draft';images:number;video:boolean;updated:string};
 type Category={id:number;name:string,count:number,accent:string};
+const SUPABASE_URL='https://jvfmptusadipzdouofdb.supabase.co'; const SUPABASE_KEY='sb_publishable_6Ph-e9YCY3aeEjxfrPqK0g_YwodZsnv';
 const productSeed:Product[]=[
 {id:1,name:'Opal',category:'Opal',variant:'White',status:'Active',images:5,video:true,updated:'Today'},
 {id:2,name:'Emerald',category:'Emerald',variant:'Vivid Green',status:'Active',images:4,video:true,updated:'Today'},
@@ -48,6 +49,7 @@ function App(){
  const[menu,setMenu]=useState(false);
  const filtered=useMemo(()=>products.filter(p=>(p.name+' '+p.category+' '+p.variant).toLowerCase().includes(search.toLowerCase())),[products,search]);
  const deleteProduct=(id:number)=>setProducts(ps=>ps.filter(p=>p.id!==id));
+ const [remoteProducts,setRemoteProducts]=useState<any[]>([]);useEffect(()=>{supabase.from('opal_products').select('id,name,slug,category_id,opal_variants(*)').then(({data})=>setRemoteProducts(data||[]))},[]);
  useEffect(()=>localStorage.setItem('opal-products',JSON.stringify(products)),[products]);
  return <div className="adminShell">
   <aside className={'sidebar '+(menu?'open':'')}>
